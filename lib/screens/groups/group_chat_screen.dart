@@ -1,67 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../services/group_service.dart';
 import '../../services/chat_service.dart';
 import '../../services/session_service.dart';
 import '../../models/study_group.dart';
+import '../../models/group_message.dart';
 import '../../widgets/message_bubble.dart';
 import '../sessions/timer_screen.dart';
 
 class GroupChatScreen extends StatefulWidget {
-    final String groupId;
-    const GroupChatScreen({super.key, required this.groupId});
+  final String groupId;
+  const GroupChatScreen({super.key, required this.groupId});
 
-    @override
-    State<GroupChatScreen> createState() => _GroupChatScreenState();
+  @override
+  State<GroupChatScreen> createState() => _GroupChatScreenState();
 }
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
-    final _groupService = GroupService();
-    final _chatService = ChatService();
-    final _sessionService = SessionService();
-    final _msg = TextEditingController();
+  final GroupService _groupService = GroupService();
+  final ChatService _chatService = ChatService();
+  final SessionService _sessionService = SessionService();
 
-    @override
-    void dispose() {
-        _msg.dispose();
-        _scroll.dispose();
-        super.dispose();
-    }
+  final TextEditingController _msg = TextEditingController();
 
-    Future<void> _send() async {
-        final t = _msg.text.trim();
-        if (t.isEmpty) return;
-        _msg.clear();
-        await _chatService.sendMessage(widget.groupId, text);
-    
-        //scroll to bottom
-        if (_scroll.hasClients) {
-            await Future.delayed(const Duration(milliseconds: 100));
-            _scroll.jumpTo(_scroll.position.maxScrollExtent);
-        }
-    }
+  @override
+  void dispose() {
+    _msg.dispose();
+    super.dispose();
+  }
 
-    Future<void> _startSession(StudyGroup group) async {
-        final session = await _sessionService.startSession(group.id, 25);
-        if (!mounted) return;
+  Future<void> _send() async {
+    final text = _msg.text.trim();
+    if (text.isEmpty) return;
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => TimerScreen(
-                    args: TimerArgs(
-                        groupId: group.id,
-                        groupName: group.name,
-                        sessionId: session.id,
-                        durationMinutes: session.durationMinutes,
-                        startTime: session.startTime,
-                        ownerUid: group.ownerUid,
-                     ),
-                ),
-            ),
-        );
-    }
+    _msg.clear();
+    await _chatService.sendMessage(widget.groupId, text);
+  }
+
+  Future<void> _startSession(StudyGroup group) async {
+    final session = await _sessionService.startSession(group.id, 25);
+    if (!mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TimerScreen(
+          args: TimerArgs(
+            groupId: group.id,
+            groupName: group.name,
+            sessionId: session.id,
+            durationMinutes: session.durationMinutes,
+            startTime: session.startTime,
+            ownerUid: group.ownerUid,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +67,12 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
       builder: (context, gSnap) {
         final group = gSnap.data;
         if (group == null) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        final isMember = group.memberUids.contains(uid);
+        final bool isMember = group.memberUids.contains(uid);
 
         return Scaffold(
           appBar: AppBar(
@@ -96,12 +93,15 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           body: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
-                        group.courseCode.isEmpty ? "Group Chat" : group.courseCode,
+                        group.courseCode.isEmpty
+                            ? "Group Chat"
+                            : group.courseCode,
                         style: const TextStyle(color: Colors.black54),
                       ),
                     ),
@@ -114,12 +114,21 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
               ),
               const Divider(height: 1),
               Expanded(
-                child: StreamBuilder(
+                child: StreamBuilder<List<GroupMessage>>(
                   stream: _chatService.streamMessages(group.id),
-                  builder: (context, mSnap) {
-                    final messages = mSnap.data ?? [];
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    final messages = snap.data ?? [];
+
                     if (messages.isEmpty) {
-                      return const Center(child: Text("No messages yet."));
+                      return const Center(
+                        child: Text("No messages yet."),
+                      );
                     }
 
                     return ListView.builder(
@@ -127,13 +136,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                       itemCount: messages.length,
                       itemBuilder: (context, i) {
                         final m = messages[i];
+                        final bool isMe = m.senderUid == uid;
                         return Align(
-                          alignment: m.senderUid == uid
+                          alignment: isMe
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: MessageBubble(
                             message: m,
-                            isMe: m.senderUid == uid,
+                            isMe: isMe,
                           ),
                         );
                       },
@@ -148,7 +158,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     Expanded(
                       child: TextField(
                         controller: _msg,
-                        decoration: const InputDecoration(hintText: "Message"),
+                        decoration: const InputDecoration(
+                          hintText: "Message",
+                        ),
                         onSubmitted: (_) => _send(),
                       ),
                     ),

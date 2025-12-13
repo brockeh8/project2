@@ -8,16 +8,18 @@ class ChatService {
     final _auth = FirebaseAuth.instance;
     final _authService = AuthService();
 
-    Stream<List<GroupMessage>> streamMessages(String groupId) {
+   Stream<List<GroupMessage>> streamMessages(String groupId) {
         return _db
             .collection('groupMessages')
             .where('groupId', isEqualTo: groupId)
-            .orderBy('timestamp')
             .snapshots()
             .map((snap) {
-        return snap.docs
-            .map((d) => GroupMessage.fromDoc(d.id, d.data()))
-            .toList();
+            final list = snap.docs
+                .map((d) => GroupMessage.fromDoc(d.id, d.data()))
+                .toList();
+
+            list.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+            return list;
         });
     }
 

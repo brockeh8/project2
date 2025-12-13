@@ -21,6 +21,14 @@ class _RoomsListScreenState extends State<RoomsListScreen> {
     super.dispose();
   }
 
+  Future<void> _seedRooms() async {
+    await _service.seedDefaultRooms();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Seeded default rooms')),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

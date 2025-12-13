@@ -22,7 +22,7 @@ class FocusNFlowApp extends StatelessWidget {
       title: 'FocusNFlow',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const AuthGate(),
+      home: AuthGate(),
     );
   }
 }

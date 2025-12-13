@@ -24,12 +24,12 @@ class ChatService {
 
         final doc = _db.collection('groupMessages').doc();
         final msg = GroupMessage(
-        id: doc.id,
-        groupId: groupId,
-        senderUid: uid,
-        senderName: name,
-        text: text.trim(),
-        timestamp: DateTime.now(),
+            id: doc.id,
+            groupId: groupId,
+            senderUid: uid,
+            senderName: name,
+            text: text.trim(),
+            timestamp: DateTime.now(),
         );
 
         await doc.set(msg.toMap());

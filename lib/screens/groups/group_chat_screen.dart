@@ -38,9 +38,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Future<void> _startSession(StudyGroup group) async {
-    final session = await _sessionService.startSession(group.id, 25);
-    if (!mounted) return;
-
+    final session = await _sessionService.startSessionNow(
+        groupId: group.id,
+        title: group.name,
+        durationMinutes: 25,
+    );
     Navigator.push(
       context,
       MaterialPageRoute(

@@ -4,49 +4,72 @@ import '../theme/app_theme.dart';
 
 class RoomCard extends StatelessWidget {
   final StudyRoom room;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const RoomCard({
     super.key,
     required this.room,
-    required this.onTap,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    String statusText;
+    Color statusColor;
+
+    if (room.isOccupied) {
+      statusText = 'In use';
+      statusColor = Colors.red.shade400;
+    } else {
+      statusText = 'Available';
+      statusColor = Colors.green.shade600;
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Material(
-        color: AppTheme.primary,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-              horizontal: 16,
-            ),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   room.name,
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
-                  "${room.building} • Floor ${room.floor} • Cap ${room.capacity}",
-                  style: const TextStyle(color: Colors.white70),
+                  '${room.building} • Floor ${room.floor} • ${room.capacity} seats',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  room.isAvailable ? "Available" : "Occupied",
-                  style: const TextStyle(color: Colors.white),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: statusColor),
+                  ),
+                  child: Text(
+                    statusText,
+                    style: TextStyle(
+                      color: statusColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ],
             ),

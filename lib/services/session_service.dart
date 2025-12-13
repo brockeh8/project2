@@ -92,17 +92,38 @@ class SessionService {
     await batch.commit();
   }
 
-
-
-  Stream<List<StudySession>> streamUpcomingSessions(String groupId) {
-    final now = DateTime.now();
+  
+  Stream<StudySession?> streamActiveSession(String groupId) {
     return _db
         .collection('sessions')
         .where('groupId', isEqualTo: groupId)
-        .where('startTime',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(now))
         .snapshots()
-        .map((snap) =>
-            snap.docs.map((d) => StudySession.fromDoc(d.id, d.data())).toList());
+        .map((snap) {
+      for (final d in snap.docs) {
+        final s = StudySession.fromDoc(d.id, d.data());
+        if (s.status == 'active') {
+          return s;
+        }
+      }
+      return null;
+    });
+  }
+
+  
+  Stream<List<StudySession>> streamUpcomingSessions(String groupId) {
+    return _db
+        .collection('sessions')
+        .where('groupId', isEqualTo: groupId)
+        .snapshots()
+        .map((snap) {
+      final now = DateTime.now();
+      final list = snap.docs
+          .map((d) => StudySession.fromDoc(d.id, d.data()))
+          .where((s) =>
+              s.startTime.isAfter(now) && s.status != 'completed')
+          .toList();
+      list.sort((a, b) => a.startTime.compareTo(b.startTime));
+      return list;
+    });
   }
 }

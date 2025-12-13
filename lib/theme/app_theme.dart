@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Georgia State–style colors
+
   static const gsuBlue = Color(0xFF0039A6); // primary
   static const gsuRed = Color(0xFFE03A3E);  // accent
-  static const background = Color(0xFFF5F7FB); // light bluish bg
+  static const background = Color(0xFFF5F7FB); // light blue
   static const card = Colors.white;
 
-  // Existing names used in your widgets
   static const primary = gsuBlue;
-  static const field = Color(0xFFE6EDF8); // pale blue input bg
+  static const field = Color(0xFFE6EDF8); 
   static const panel = background;
 
   static const accent = gsuRed;
@@ -25,7 +24,7 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: background,
 
-      // AppBar = solid GSU blue, white text
+   
       appBarTheme: const AppBarTheme(
         backgroundColor: gsuBlue,
         foregroundColor: Colors.white,
@@ -38,13 +37,13 @@ class AppTheme {
         ),
       ),
 
-      // FAB = red accent
+      // Red
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: gsuRed,
         foregroundColor: Colors.white,
       ),
 
-      // Elevated buttons = pill-shaped blue
+      // Elevated buttons
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: gsuBlue,
@@ -60,7 +59,7 @@ class AppTheme {
         ),
       ),
 
-      // Text buttons = blue text
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: gsuBlue,
@@ -68,7 +67,7 @@ class AppTheme {
         ),
       ),
 
-      // Bottom nav = white bar, blue selected, gray unselected
+
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         selectedItemColor: gsuBlue,
         unselectedItemColor: Colors.grey,
@@ -77,7 +76,7 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
       ),
 
-      // Inputs = rounded, white cards with light border
+     
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: card,

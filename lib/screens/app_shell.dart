@@ -1,4 +1,3 @@
-// lib/screens/app_shell.dart
 import 'package:flutter/material.dart';
 
 import 'groups/groups_list_screen.dart';

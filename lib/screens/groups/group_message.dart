@@ -42,12 +42,12 @@ class GroupMessage {
 
 
         return GroupMessage(
-        id: id,
-        groupId: map['groupId'] ?? '',
-        senderUid: map['senderUid'] ?? '',
-        senderName: map['senderName'] ?? 'User',
-        text: map['text'] ?? '',
-        timestamp: time,
+            id: id,
+            groupId: map['groupId'] ?? '',
+            senderUid: map['senderUid'] ?? '',
+            senderName: map['senderName'] ?? 'User',
+            text: map['text'] ?? '',
+            timestamp: time,
         );
     }
 }

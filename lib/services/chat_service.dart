@@ -14,11 +14,17 @@ class ChatService {
             .where('groupId', isEqualTo: groupId)
             .orderBy('timestamp')
             .snapshots()
-            .map((snap) =>
-                snap.docs.map((d) => GroupMessage.fromDoc(d.id, d.data())).toList());
+            .map((snap) {
+        return snap.docs
+            .map((d) => GroupMessage.fromDoc(d.id, d.data()))
+            .toList();
+        });
     }
 
     Future<void> sendMessage(String groupId, String text) async {
+        final trimmed = text.trim();
+        if (trimmed.isEmpty) return;
+
         final uid = _auth.currentUser!.uid;
         final name = await _authService.getDisplayName(uid);
 

@@ -1,4 +1,3 @@
-// lib/widgets/group_card.dart
 import 'package:flutter/material.dart';
 import '../models/study_group.dart';
 import '../theme/app_theme.dart';

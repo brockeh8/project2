@@ -25,6 +25,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     @override
     void dispose() {
         _msg.dispose();
+        _scroll.dispose();
         super.dispose();
     }
 
@@ -32,7 +33,13 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         final t = _msg.text.trim();
         if (t.isEmpty) return;
         _msg.clear();
-        await _chatService.sendMessage(widget.groupId, t);
+        await _chatService.sendMessage(widget.groupId, text);
+    
+        //scroll to bottom
+        if (_scroll.hasClients) {
+            await Future.delayed(const Duration(milliseconds: 100));
+            _scroll.jumpTo(_scroll.position.maxScrollExtent);
+        }
     }
 
     Future<void> _startSession(StudyGroup group) async {

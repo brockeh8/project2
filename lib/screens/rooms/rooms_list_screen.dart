@@ -89,6 +89,11 @@ class _RoomsListScreenState extends State<RoomsListScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _seedRooms,
+        icon: const Icon(Icons.cloud_upload),
+        label: const Text('Seed Rooms'),
+      ),
     );
   }
 }

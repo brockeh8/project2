@@ -7,6 +7,7 @@ import '../../models/study_group.dart';
 import '../../models/group_message.dart';
 import '../../widgets/message_bubble.dart';
 import '../sessions/timer_screen.dart';
+import '../../theme/app_theme.dart';
 
 class GroupChatScreen extends StatefulWidget {
   final String groupId;
@@ -88,6 +89,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     await _groupService.joinGroup(group.id);
                   }
                 },
+                style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.gsuRed, 
+                ),
                 child: Text(isMember ? "Leave" : "Join"),
               ),
             ],
